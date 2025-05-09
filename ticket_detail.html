@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Destek Talebi Detayı</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        main {
+            flex: 1;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">Destek Sistemi</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="hakkında.html">Hakkında</a></li>
+                    <li class="nav-item"><a class="nav-link" href="destek.html">Destek</a></li>
+                    <li class="nav-item"><a class="nav-link" href="iletişim.html">İletişim</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-info text-white">
+                        <h4 class="mb-0">Destek Talebi Detayı</h4>
+                    </div>
+                    <div class="card-body" id="ticketDetail">
+                        <!-- Detaylar JS ile doldurulacak -->
+                        <p>Yükleniyor...</p>
+                    </div>
+                </div>
+                <div class="text-center mt-3">
+                    <a href="dashboard.html" class="btn btn-link">Panele Geri Dön</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="bg-primary text-white text-center py-3 mt-auto">
+        <div class="container">
+            <p class="mb-0">&copy; 2025 Destek Sistemi. Tüm hakları saklıdır.</p>
+        </div>
+    </footer>
+    
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get('id');
+
+        fetch(`/api/tickets/${id}`)
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error('Talep bulunamadı');
+                }
+                return res.json();
+            })
+            .then(ticket => {
+                const detailDiv = document.getElementById('ticketDetail');
+                detailDiv.innerHTML = `
+                    <h5><strong>Başlık:</strong> ${ticket.title}</h5>
+                    <p><strong>Açıklama:</strong> ${ticket.description}</p>
+                    <p><strong>Durum:</strong> <span class="badge bg-${ticket.status === 'open' ? 'success' : 'secondary'}">${ticket.status}</span></p>
+                `;
+            })
+            .catch(err => {
+                const detailDiv = document.getElementById('ticketDetail');
+                detailDiv.innerHTML = `<div class="alert alert-danger">Talep bulunamadı veya bir hata oluştu.</div>`;
+            });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

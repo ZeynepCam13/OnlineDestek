@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Online Destek Sistemi - Kayıt Ol</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">Destek Sistemi</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="hakkında.html">Hakkında</a></li>
+                    <li class="nav-item"><a class="nav-link" href="destek.html">Destek</a></li>
+                    <li class="nav-item"><a class="nav-link" href="iletişim.html">İletişim</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="d-flex w-100">
+        <div class="container d-flex flex-column">
+            <div class="row vh-100">
+                <div class="col-sm-10 col-md-8 col-lg-6 col-xl-5 mx-auto d-table h-100">
+                    <div class="d-table-cell align-middle">
+
+                        <div class="text-center mt-4">
+                            <h1 class="h2">Hemen Başla</h1>
+                            <p class="lead">
+                                Kendin için bir hesap oluştur.
+                            </p>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="m-sm-3">
+                                    <form id="registerForm">
+                                        <div class="mb-3">
+                                            <label class="form-label">Ad Soyad</label>
+                                            <input class="form-control form-control-lg" type="text" id="fullname" placeholder="Adınızı ve soyadınızı girin" required />
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">E-posta</label>
+                                            <input class="form-control form-control-lg" type="email" id="email" placeholder="E-posta adresinizi girin" required />
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Telefon</label>
+                                            <input class="form-control form-control-lg" type="tel" id="phone" placeholder="Telefon numaranızı girin" required />
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Kullanıcı Adı</label>
+                                            <input class="form-control form-control-lg" type="text" id="username" placeholder="Kullanıcı adı seçin" required />
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Şifre</label>
+                                            <input class="form-control form-control-lg" type="password" id="password" placeholder="Şifre belirleyin" required />
+                                        </div>
+                                        <div class="d-grid gap-2 mt-3">
+                                            <button type="submit" class="btn btn-lg btn-primary">Kayıt Ol</button>
+                                        </div>
+                                    </form>
+                                    <p id="message" class="text-center mt-3 d-none"></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-center mb-3 mt-2">
+                            Zaten hesabın var mı? <a href="index.html">Giriş Yap</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-primary text-white text-center py-3">
+        <div class="container">
+            <p class="mb-0">&copy; 2025 Destek Sistemi. Tüm hakları saklıdır.</p>
+        </div>
+    </footer>
+
+    <script>
+        const form = document.getElementById('registerForm');
+        const message = document.getElementById('message');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const fullname = document.getElementById('fullname').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+
+            if (password.length < 6) {
+                message.className = 'alert alert-danger mt-3';
+                message.textContent = 'Şifre en az 6 karakter olmalıdır.';
+                message.classList.remove('d-none');
+                return;
+            }
+
+            const res = await fetch('http://localhost:3000/api/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ fullname, email, phone, username, password })
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                message.className = 'alert alert-success mt-3';
+                message.textContent = 'Kayıt başarılı! Giriş sayfasına yönlendiriliyorsunuz...';
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1000);
+            } else {
+                message.className = 'alert alert-danger mt-3';
+                message.textContent = data.error || 'Bir hata oluştu.';
+            }
+            message.classList.remove('d-none');
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
